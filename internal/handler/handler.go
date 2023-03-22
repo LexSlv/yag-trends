@@ -30,9 +30,9 @@ func NewHandler(pool *repository.Repo, cnf *config.Cnf) *Handler {
 func (h *Handler) GetGamesTopList(c *fiber.Ctx) error {
 	offset := "0"
 	limit := "100"
-	if c.Params("offset") != "" {
-		offset = c.Params("offset")
-		limit = c.Params("limit")
+	if c.Query("offset") != "" && c.Query("limit") != "" {
+		offset = c.Query("offset")
+		limit = c.Query("limit")
 	}
 
 	games, err := h.pool.GetGamesTrends(offset, limit)
