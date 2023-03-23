@@ -11,7 +11,7 @@ func NewRoutes(h *handler.Handler) *fiber.App {
 	app := fiber.New()
 	app.Get("/healthcheck", func(c *fiber.Ctx) error {
 		log.Info().Msg("Healthcheck is working!")
-		return c.SendString("OK")
+		return c.SendString("Alive!")
 	})
 	app.Get("/trends", h.GetGamesTopList)
 	return app
