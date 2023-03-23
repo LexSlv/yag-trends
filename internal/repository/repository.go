@@ -116,14 +116,16 @@ func (repo *Repo) CollectGames(games models.FeedGames) error {
 }
 
 func (repo *Repo) GetGamesTrends(offset, limit string) ([]models.Game, error) {
-	selectStmt := `SELECT id, name, img, players, trend, developer, created_at, url FROM games WHERE created_at = $1 AND trend > 0 ORDER BY trend DESC LIMIT $2 OFFSET $3`
-	today := time.Now().Format("2006-01-02")
+	selectStmt := `SELECT id, name, img, players, trend, developer, created_at, url FROM games WHERE created_at BETWEEN CURRENT_DATE - INTERVAL '3 days' AND CURRENT_DATE AND trend > 0 GROUP BY id, name, img, players, trend, developer, created_at, url ORDER BY trend DESC LIMIT $1 OFFSET $2`
+	log.Info().Msg(offset)
 	var games []models.Game
-	rows, err := repo.db.Query(context.Background(), selectStmt, today, limit, offset)
+	rows, err := repo.db.Query(context.Background(), selectStmt, limit, offset)
 	if err != nil {
 		log.Error().Msg("[PGXPOOL] GetGamesTrends select: " + err.Error())
 	}
 	defer rows.Close()
+
+	log.Info().Msg(selectStmt)
 
 	for rows.Next() {
 		var g models.Game
