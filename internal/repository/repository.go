@@ -116,7 +116,7 @@ func (repo *Repo) CollectGames(games models.FeedGames) error {
 }
 
 func (repo *Repo) GetGamesTrends(offset, limit string) ([]models.Game, error) {
-	selectStmt := `SELECT id, name, img, players, trend, developer, created_at, url FROM games WHERE created_at BETWEEN CURRENT_DATE - INTERVAL '3 days' AND CURRENT_DATE AND trend > 0 GROUP BY id, name, img, players, trend, developer, created_at, url ORDER BY trend DESC LIMIT $1 OFFSET $2`
+	selectStmt := `SELECT id, name, img, players, trend, developer, created_at, url FROM games WHERE created_at = $1 AND trend > 0 ORDER BY trend DESC LIMIT $2 OFFSET $3`
 	log.Info().Msg(offset)
 	var games []models.Game
 	rows, err := repo.db.Query(context.Background(), selectStmt, limit, offset)
